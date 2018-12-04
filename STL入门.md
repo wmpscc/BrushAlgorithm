@@ -217,3 +217,142 @@ int main() {
 }
 
 ```
+
+### set
+- UVa 10815
+
+``` c
+#include <iostream>
+#include <string>
+#include <set>
+#include <sstream>
+
+using namespace std;
+
+set<string> dict;   // 集合
+int main() {
+    string s, buf;
+    while (cin >> s) {
+        for (int i = 0; i < s.length(); ++i) {
+            if (isalpha(s[i]))
+                s[i] = tolower(s[i]);
+            else
+                s[i] = ' ';
+        }
+        stringstream ss(s);
+        while (ss >> buf)
+            dict.insert(buf);
+    }
+    for (set<string>::iterator it = dict.begin(); it != dict.end(); ++it) {
+        cout << *it << "\n";
+    }
+
+
+    return 0;
+}
+```
+
+
+### map
+
+- UVa156
+
+``` C
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using namespace std;
+
+map<string, int> cnt;
+vector<string> words;
+
+// 将单词s进行“标准化”
+string repr(const string &s) {
+    string ans = s;
+    for (int i = 0; i < ans.length(); ++i) {
+        ans[i] = tolower(ans[i]);
+    }
+    sort(ans.begin(), ans.end());
+    return ans;
+}
+
+int main() {
+    int n = 0;
+    string s;
+    while (cin >> s) {
+        if (s[0] == '#')break;
+
+        words.push_back(s);
+        string r = repr(s);
+        if (!cnt.count(r))cnt[r] = 0;
+        cnt[r]++;
+    }
+    vector<string> ans;
+    for (int i = 0; i < words.size(); ++i) {
+        if (cnt[repr(words[i])] == 1)ans.push_back(words[i]);
+    }
+    sort(ans.begin(), ans.end());
+    for (int j = 0; j < ans.size(); ++j) {
+        cout << ans[j] << "\n";
+    }
+
+    return 0;
+}
+
+```
+
+### queue
+
+``` C
+#include <cstdio>
+#include <queue>
+#include <map>
+using namespace std;
+
+const int maxt = 1000 + 10;
+
+int main() {
+    int t, kase = 0;
+    while (scanf("%d", &t) == 1 && t) {
+        printf("Scenario #%d\n", ++kase);
+
+        // 记录所有人的团队编号
+        map<int, int> team;  // team[x]表示编号为x的人所在的团队编号
+        for (int i = 0; i < t; ++i) {
+            int n, x;
+            scanf("%d", &n);
+            while (n--) {
+                scanf("%d", &x);
+                team[x] = i;
+            }
+        }
+        queue<int> q, q2[maxt]; // q是团队的队列，而q2[i]是团队i成员的队列
+        for (;;) {
+            int x;
+            char cmd[10];
+            scanf("%s", cmd);
+            if (cmd[0] == 'S')break;
+            else if (cmd[0] == 'D') {
+                int t = q.front();
+                printf("%d\n", q2[t].front());
+                q2[t].pop();
+                if (q2[t].empty())
+                    q.pop();    // 团队t全体出队列
+            } else if (cmd[0] == 'E') {
+                scanf("%d", &x);
+                int t = team[x];
+                if (q2[t].empty())q.push(t);    // 团队t进入队列
+                q2[t].push(x);
+            }
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+```
