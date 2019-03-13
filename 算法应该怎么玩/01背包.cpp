@@ -1,63 +1,3 @@
-# 贪婪法（Greedy Algorithm）
-贪婪法（Greedy Algorithm），又称贪心算法，是寻找最优解问题的常用方法，这种方法模式一般将求解过程分成若干个步骤，但每个步骤都应用贪心原则，选取当前状态下最好的或最优的选择（局部最有利的选择），并以此希望最后堆叠出的结果也是最好或最优的解。因为不进行回溯处理，贪婪法只在很少的情况下可以得到真正的最优解，比如最短路径问题、图的最小生成树问题。在大多数情况下，由于选择策略的“短视”，贪婪法会错过真正的最优解，而得不到问题的真正答案。但是贪婪法简单、高效，省去了为找最优解可能需要的穷举操作，可以得到与最优解比较接近的近似最优解，通常作为其他算法的辅助算法来使用。
-
-当然，对于一些能够证明贪婪策略得到的就是最优解的问题，应用贪婪法可以高效地求得结果，比如求最小生成树的 Prim 算法和 Kruskal 算法。事实上，在任何算法中，只要在某个阶段使用了只考虑局部最优情况的选择策略，都可以理解为使用了贪婪算法。
-
-**贪婪法的基本设计思想有以下三个步骤：**
-- 建立对问题精确描述的数学模型，包括定义最优解的模型；
-- 将问题分解为一系列的子问题，同时定义子问题的最优解结构；
-- 应用贪心原则确定每个子问题的局部最优解，并根据最优解的模型，用子问题的局部最优解堆叠出全局最优解。
-
-## 0-1 贪婪法的例子：0-1 背包问题背包问题
-核心代码如下：
-spFunc:
-``` C++
-int Choosefunc1(std::vector<OBJECT>& objs, int c)
-{
-    int index = -1;
-    int mp = 0;
-    for(int i = 0; i < static_cast<int>(objs.size()); i++)
-    {
-        if((objs[i].status == 0) && (objs[i].price > mp))
-        {
-            mp = objs[i].price;
-            index = i;
-        }
-    }
-
-    return index;
-}
-```
-
-``` C++
-void GreedyAlgo(KNAPSACK_PROBLEM *problem, SELECT_POLICY spFunc)
-{
-    int idx;
-    int ntc = 0;
-
-    //spFunc 每次选最符合策略的那个物品，选后再检查
-    while((idx = spFunc(problem->objs, problem->totalC - ntc)) != -1)
-    {
-        //所选物品是否满足背包承重要求？
-        if((ntc + problem->objs[idx].weight) <= problem->totalC)
-        {
-            problem->objs[idx].status = 1;
-            ntc += problem->objs[idx].weight;
-        }
-        else
-        {
-            //不能选这个物品了，做个标记后重新选
-            problem->objs[idx].status = 2; 
-        }
-    }
-
-    PrintResult(problem->objs);
-}\
-```
-
-完整代码如下：
-
-``` C++
 // knapsack.cpp : Defines the entry point for the console application.
 //
 #include <cstring> 
@@ -239,5 +179,3 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-
-```
